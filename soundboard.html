@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Soundboard</title>
+	<link rel="stylesheet" href="soundboard.css">
+	<script type="text/javascript" src="paper-full.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.1.2/howler.js"></script>
+	<script type="text/paperscript" canvas="myCanvas">
+		
+		var circles = [];
+
+		var soundLibrary = {
+			a: {
+				sound: new Howl({
+					src: ['sounds/bubbles.mp3']}),
+				color: "#f44242"
+			},
+			s: {
+				sound: new Howl({
+					src: ['sounds/dotted-spiral.mp3']}),
+				color: "#f48941"
+			},
+			d: {
+				sound: new Howl({
+					src: ['sounds/clay.mp3']}),
+				color: "#f4be41"
+			},
+			f: {
+				sound: new Howl({
+					src: ['sounds/confetti.mp3']}),
+				color: "#eef441"
+			},
+			g: {
+				sound: new Howl({
+					src: ['sounds/corona.mp3']}),
+				color: "#88f441"
+			},
+			h: {
+				sound: new Howl({
+					src: ['sounds/flash-1.mp3']}),
+				color: "#41f4a3"
+			},
+			j: {
+				sound: new Howl({
+					src: ['sounds/flash-2.mp3']}),
+				color: "#41d6f4"
+			},
+			k: {
+				sound: new Howl({
+					src: ['sounds/flash-3.mp3']}),
+				color: "#416af4"
+			},
+			l: {
+				sound: new Howl({
+					src: ['sounds/glimmer.mp3']}),
+				color: "#f441a9"
+			}
+		}; 
+		
+
+		//Here we create the circle on every key.
+		function onKeyDown(event) {
+			if (soundLibrary[event.key]) {
+				var maxPoint = new Point(view.size.width, view.size.height);
+				var randomPoint = Point.random();
+				var point = maxPoint * randomPoint;
+				var newCircle = new Path.Circle(point, 200);
+				newCircle.fillColor = soundLibrary[event.key].color;
+				circles.push(newCircle);
+				//event.key tunnistaa, mikä näppäin on kyseessä
+				//tehdään siis kirjasto joka ottaa event.keyn ja etsii sitä mätsäävän äänen
+				soundLibrary[event.key].sound.play();
+			}
+		}
+	
+
+		function onFrame() {
+			for (var i = 0; i < circles.length; i++) {
+				circles[i].fillColor.hue +=1;
+				circles[i].scale(.9);
+				if (circles[i].area < 1) {
+					console.log(circles);
+					circles[i].remove();
+					circles.splice(i, 1);
+					console.log(circles);
+				}
+			}
+		}
+
+	</script>
+</head>
+<body>
+	<canvas id="myCanvas" resize></canvas>
+</body>
+</html>
